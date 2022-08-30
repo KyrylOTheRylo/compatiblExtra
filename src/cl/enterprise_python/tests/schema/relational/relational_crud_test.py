@@ -56,12 +56,15 @@ class RelCrudTest:
 
         # Create a list of currencies to populate swap records
         ccy_list = ["USD", "GBP", "JPY", "NOK", "AUD"]
+        notion_list = [100, 200, 300]
+        notion_len = len(notion_list)
         ccy_count = len(ccy_list)
 
         fixed_legs = [
             RelationalLeg(
                 leg_id=f"L{i + 1}1",
                 trade_id=f"T{i + 1}",
+                trade_notion=notion_list[i % notion_len],
                 leg_type="Fixed",
                 leg_ccy=ccy_list[i % ccy_count],
             )
@@ -72,6 +75,7 @@ class RelCrudTest:
             RelationalLeg(
                 leg_id=f"L{i + 1}2",
                 trade_id=f"T{i + 1}",
+                trade_notion=notion_list[i % notion_len],
                 leg_type="Floating",
                 leg_ccy="EUR",
             )
@@ -83,6 +87,7 @@ class RelCrudTest:
             RelationalSwap(
                 trade_id=f"T{i + 1}",
                 trade_type="Swap",
+                trade_notion=notion_list[i % notion_len],
                 legs=[fixed_legs[i], floating_legs[i]],
             )
             for i in range(0, 2)
@@ -93,6 +98,7 @@ class RelCrudTest:
             RelationalBond(
                 trade_id=f"T{i + 1}",
                 trade_type="Bond",
+                trade_notion=notion_list[i % notion_len],
                 bond_ccy=ccy_list[i % ccy_count],
             )
             for i in range(2, 3)
@@ -116,12 +122,10 @@ class RelCrudTest:
         trades = self.create_records()
 
         with engine.connect() as connection:
-
             # Create schema
             RelationalBase.metadata.create_all(engine)
 
             with Session(engine) as session:
-
                 # Write the trade and leg records and commit
                 session.add_all(trades)
                 session.commit()
@@ -135,7 +139,7 @@ class RelCrudTest:
                 # Add the result to approvaltests file
                 result += "All Trades:\n" + "".join(
                     [
-                        f"    trade_id={trade.trade_id} trade_type={trade.trade_type}\n"
+                        f"    trade_id={trade.trade_id} trade_type={trade.trade_type} trade_notion = {trade.trade_notion}\n"
                         for trade in all_trades
                     ]
                 )
@@ -145,14 +149,14 @@ class RelCrudTest:
                 # Must use noqa because PyCharm linter thinks does not return anything
                 all_swaps = list(
                     session.query(RelationalSwap)
-                    .where(RelationalSwap.trade_type == "Swap")
-                    .order_by(RelationalSwap.trade_id)
+                        .where(RelationalSwap.trade_type == "Swap")
+                        .order_by(RelationalSwap.trade_id)
                 )  # noqa
 
                 # Add the result to approvaltests file
                 result += "All Swaps:\n" + "".join(
                     [
-                        f"    trade_id={trade.trade_id} trade_type={trade.trade_type}\n"
+                        f"    trade_id={trade.trade_id} trade_type={trade.trade_type} trade_notion = {trade.trade_notion}\n"
                         for trade in all_swaps
                     ]
                 )
@@ -167,21 +171,21 @@ class RelCrudTest:
                 #  market are like that), so we do not need to eliminate duplicates.
                 gbp_fixed_swaps = list(
                     session.query(RelationalSwap)
-                    .join(RelationalLeg)
-                    .where(
+                        .join(RelationalLeg)
+                        .where(
                         sa.and_(
                             RelationalSwap.trade_type == "Swap",
                             RelationalLeg.leg_ccy == "GBP",
                             RelationalLeg.leg_type == "Fixed",
                         )
                     )
-                    .order_by(RelationalSwap.trade_id)
+                        .order_by(RelationalSwap.trade_id)
                 )  # noqa
 
                 # Add the result to approvaltests file
                 result += "Swaps where fixed leg has GBP currency:\n" + "".join(
                     [
-                        f"    trade_id={trade.trade_id} trade_type={trade.trade_type} "
+                        f"    trade_id={trade.trade_id} trade_type={trade.trade_type} trade_notion = {trade.trade_notion} "
                         f"leg_type[0]={trade.legs[0].leg_type} leg_ccy[0]={trade.legs[0].leg_ccy} "
                         f"leg_type[1]={trade.legs[1].leg_type} leg_ccy[1]={trade.legs[1].leg_ccy}\n"
                         for trade in gbp_fixed_swaps

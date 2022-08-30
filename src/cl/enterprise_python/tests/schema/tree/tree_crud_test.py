@@ -57,13 +57,16 @@ class TreeCrudTest:
 
         # Create a list of currencies to populate swap records
         ccy_list = ["USD", "GBP", "JPY", "NOK", "AUD"]
+        notion_list = [100, 200, 300]
+        notion_len = len(notion_list)
         ccy_count = len(ccy_list)
 
         # Create swap records
         swaps = [
             TreeSwap(
-                trade_id=f"T{i+1}",
+                trade_id=f"T{i + 1}",
                 trade_type="Swap",
+                trade_notion=notion_list[i % notion_len],
                 legs=[
                     TreeLeg(leg_type="Fixed", leg_ccy=ccy_list[i % ccy_count]),
                     TreeLeg(leg_type="Floating", leg_ccy="EUR"),
@@ -73,7 +76,10 @@ class TreeCrudTest:
         ]
         bonds = [
             TreeBond(
-                trade_id=f"T{i+1}", trade_type="Bond", bond_ccy=ccy_list[i % ccy_count]
+                trade_id=f"T{i + 1}",
+                trade_type="Bond",
+                trade_notion=notion_list[i % notion_len],
+                bond_ccy=ccy_list[i % ccy_count]
             )
             for i in range(2, 3)
         ]
@@ -158,7 +164,7 @@ class TreeCrudTest:
         at.verify(result)
 
         # Delete (drop) the database after the test
-        self.tear_down(connection_alias, connection)
+        # self.tear_down(connection_alias, connection)
 
 
 if __name__ == "__main__":

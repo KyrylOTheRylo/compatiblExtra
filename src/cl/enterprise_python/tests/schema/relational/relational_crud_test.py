@@ -192,7 +192,7 @@ class RelCrudTest:
         at.verify(result)
 
         # Drop database to clean up after the test
-        #self.clean_up()
+        self.clean_up()
 
 
 if __name__ == "__main__":

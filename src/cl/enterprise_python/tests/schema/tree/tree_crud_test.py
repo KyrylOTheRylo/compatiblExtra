@@ -155,7 +155,14 @@ class TreeCrudTest:
                 for trade in gbp_fixed_swaps
             ]
         )
-
+        # TODO
+        notion200 = TreeTrade.objects(trade_notion__gte=200.0).order_by("trade_id")
+        result += "Trades where notion >= 200:\n" + "\n".join(
+            [
+                f"    trade_id={trade.trade_id} trade_type={trade.trade_type} trade_notion = {trade.trade_notion}"
+                for trade in notion200
+            ]
+        )
         # Further study - for MongoDB and certain other databases, wildcard queries
         # can be used to simultaneously query for GBP currency in both legs when this
         # data format is used. These advanced queries are outside the scope of this course.

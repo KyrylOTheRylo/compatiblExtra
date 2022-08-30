@@ -1,0 +1,12 @@
+# Using glob syntax
+syntax: glob
+
+**/.mypy_cache
+**/__pycache__
+**/venv
+*.idea
+*.pyd
+*.db
+
+# Using regexp syntax
+syntax: regexp

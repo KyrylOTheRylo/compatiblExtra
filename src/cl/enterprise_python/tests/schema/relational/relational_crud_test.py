@@ -196,10 +196,10 @@ class RelCrudTest:
                 )  # noqa
 
                 # Add the result to approvaltests file
-                result += "Trades where notion >= 200:\n{0}".format("".join(
+                result += "Trades where notion >= 200:\n{0}".format("\n".join(
                     [
                         f"    trade_id={trade.trade_id} trade_type={trade.trade_type} "
-                        f"trade_notion = {trade.trade_notion}\n"
+                        f"trade_notion = {trade.trade_notion}"
 
                         for trade in notion200_trades
                     ]

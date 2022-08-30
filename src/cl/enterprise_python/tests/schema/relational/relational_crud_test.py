@@ -189,6 +189,21 @@ class RelCrudTest:
                         for trade in gbp_fixed_swaps
                     ]
                 )
+                # The objective is to retrieve only those trades that have notion attribute >= 200
+                notion200_trades = list(
+                    session.query(RelationalTrade).where(RelationalTrade.trade_notion >= 200.0)
+                        .order_by(RelationalTrade.trade_notion)
+                )  # noqa
+
+                # Add the result to approvaltests file
+                result += "Trades where notion >= 200:\n{0}".format("".join(
+                    [
+                        f"    trade_id={trade.trade_id} trade_type={trade.trade_type} "
+                        f"trade_notion = {trade.trade_notion}\n"
+
+                        for trade in notion200_trades
+                    ]
+                ))
 
         # Verify result
         at.verify(result)

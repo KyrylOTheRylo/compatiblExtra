@@ -33,5 +33,8 @@ class RelationalLegKey(RelationalBase):
     trade_id: str = sa.Column(sa.String, sa.ForeignKey("rel_trade.trade_id"))
     """Identifier of trade to which the leg belongs (foreign key)."""
 
+    trade_notion: float = sa.Column(sa.Float)
+    """Trade notion."""
+
     swap = relationship("RelationalSwap", back_populates="legs")
     """Reference from leg to swap."""

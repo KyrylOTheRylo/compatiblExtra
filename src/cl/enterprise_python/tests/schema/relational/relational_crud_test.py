@@ -64,7 +64,6 @@ class RelCrudTest:
             RelationalLeg(
                 leg_id=f"L{i + 1}1",
                 trade_id=f"T{i + 1}",
-                trade_notion=notion_list[i % notion_len],
                 leg_type="Fixed",
                 leg_ccy=ccy_list[i % ccy_count],
             )
@@ -75,7 +74,6 @@ class RelCrudTest:
             RelationalLeg(
                 leg_id=f"L{i + 1}2",
                 trade_id=f"T{i + 1}",
-                trade_notion=notion_list[i % notion_len],
                 leg_type="Floating",
                 leg_ccy="EUR",
             )

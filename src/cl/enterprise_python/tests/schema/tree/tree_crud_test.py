@@ -104,7 +104,7 @@ class TreeCrudTest:
         # Add the result to approvaltests file
         result += "All Trades:\n" + "".join(
             [
-                f"    trade_id={trade.trade_id} trade_type={trade.trade_type}\n"
+                f"    trade_id={trade.trade_id} trade_type={trade.trade_type} trade_notion = {trade.trade_notion}\n"
                 for trade in all_trades
             ]
         )
@@ -115,7 +115,7 @@ class TreeCrudTest:
         # Add the result to approvaltests file
         result += "All Swaps:\n" + "".join(
             [
-                f"    trade_id={trade.trade_id} trade_type={trade.trade_type}\n"
+                f"    trade_id={trade.trade_id} trade_type={trade.trade_type} trade_notion = {trade.trade_notion}\n"
                 for trade in all_swaps
             ]
         )
@@ -149,7 +149,7 @@ class TreeCrudTest:
         # Add the result to approvaltests file
         result += "Swaps where fixed leg has GBP currency:\n" + "".join(
             [
-                f"    trade_id={trade.trade_id} trade_type={trade.trade_type} "
+                f"    trade_id={trade.trade_id} trade_type={trade.trade_type} trade_notion = {trade.trade_notion} "
                 f"leg_type[0]={trade.legs[0].leg_type} leg_ccy[0]={trade.legs[0].leg_ccy} "
                 f"leg_type[1]={trade.legs[1].leg_type} leg_ccy[1]={trade.legs[1].leg_ccy}\n"
                 for trade in gbp_fixed_swaps

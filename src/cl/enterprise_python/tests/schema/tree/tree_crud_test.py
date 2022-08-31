@@ -155,7 +155,7 @@ class TreeCrudTest:
                 for trade in gbp_fixed_swaps
             ]
         )
-        # TODO
+        # retrieving all trades where notion >= 200
         notion200 = TreeTrade.objects(trade_notion__gte=200.0).order_by("trade_id")
         result += "Trades where notion >= 200:\n" + "\n".join(
             [
@@ -171,7 +171,7 @@ class TreeCrudTest:
         at.verify(result)
 
         # Delete (drop) the database after the test
-        # self.tear_down(connection_alias, connection)
+        self.tear_down(connection_alias, connection)
 
 
 if __name__ == "__main__":

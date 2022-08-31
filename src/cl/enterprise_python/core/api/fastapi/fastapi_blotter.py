@@ -34,7 +34,9 @@ def create_trades(trade_count: int) -> List[TreeTrade]:
     """
 
     # Create a list of currencies to populate swap records
-    ccy_list = ["USD", "EUR", "GBP", "JPY", "NOK", "AUD", "CAD"]
+    ccy_list = ["USD", "GBP", "JPY", "NOK", "AUD"]
+    notion_list = [100, 200, 300]
+    notion_len = len(notion_list)
     ccy_count = len(ccy_list)
 
     # Create swap records
@@ -42,6 +44,7 @@ def create_trades(trade_count: int) -> List[TreeTrade]:
         TreeSwap(
             trade_id=f"T{(i + 1):03}",
             trade_type="Swap",
+            trade_notion=notion_list[i % notion_len],
             legs=[
                 TreeLeg(leg_type="Fixed", leg_ccy=ccy_list[i % ccy_count]),
                 TreeLeg(leg_type="Floating", leg_ccy=ccy_list[(2 * i) % ccy_count]),
@@ -58,7 +61,7 @@ def get_root() -> str:
     return "Welcome to FastAPI Trade Blotter!"
 
 
-@app.post("/add_trades/{trade_count}")
+@app.get("/add_trades/{trade_count}")
 def add_trades(trade_count: int) -> str:
     """
     Create and add to DB the specified number of random swap records.
@@ -74,7 +77,7 @@ def add_trades(trade_count: int) -> str:
     return f"Success: Added {trade_count} trades. DB now has {total_count} trades."
 
 
-@app.post("/clear_trades")
+@app.get("/clear_trades")
 def clear_trades() -> str:
     """Clear all trades from the database."""
 
@@ -85,7 +88,7 @@ def clear_trades() -> str:
     return f"Success: {total_count} trades cleared from DB."
 
 
-@app.post("/get_trade")
+@app.get("/get_trade")
 def get_trade(trade_id: str):
     """
     Retrieve from DB by trade_id and return the specified trade.
@@ -94,7 +97,7 @@ def get_trade(trade_id: str):
     return trade.to_json()
 
 
-@app.post("/query_trades")
+@app.get("/query_trades")
 def query_trades(leg_ccy: Optional[str] = None):
     """
     If leg_ccy is specified, return all trades where the currency for
@@ -114,6 +117,18 @@ def query_trades(leg_ccy: Optional[str] = None):
 @app.get("/example_raising_exception")
 def example_raising_exception():
     raise HTTPException(status_code=418, detail="Exception raised in FastAPI.")
+
+
+@app.get("/query_by_notional")
+def query_by_notional(min_notional: Optional[float] = None):
+    if min_notional is None:
+        # retrieve all records
+        trades = TreeTrade.objects.order_by("trade_id")
+    else:
+        # retrieving all trades where notion >= given data
+        trades = TreeTrade.objects(trade_notion__gte=min_notional).order_by("trade_id")
+    result = {"trades": [trade.to_json() for trade in trades]}
+    return result
 
 
 if __name__ == "__main__":

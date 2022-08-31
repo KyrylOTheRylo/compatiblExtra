@@ -15,20 +15,30 @@
 import requests
 
 if __name__ == "__main__":
-
     # Execute fastapi_intro.py before running this code
 
     # Query all trades
     api_url = "http://localhost:50301/query_trades"  # Port used by fastapi_blotter.py
-    trades = requests.post(api_url)
+    trades = requests.get(api_url)
     print(f"All trades: {trades.json()}")
 
     # Query trades that have GBP for at least one leg
     api_url = "http://localhost:50301/query_trades"  # Port used by fastapi_blotter.py
-    gbp_trades = requests.post(api_url, params={"leg_ccy": "GBP"})
+    gbp_trades = requests.get(api_url, params={"leg_ccy": "GBP"})
     print(f"Trades where leg_ccy=GBP for at least one leg: {gbp_trades.json()}")
 
     # Get one specific trade
     api_url = "http://localhost:50301/get_trade"  # Port used by fastapi_blotter.py
-    t3_trade = requests.post(api_url, params={"trade_id": "T003"})
+    t3_trade = requests.get(api_url, params={"trade_id": "T003"})
     print(f"Trade with trade_id=T3: {t3_trade.json()}")
+
+    # get request on query_by_notional with no params
+    api_url = "http://localhost:50301/query_by_notional"  # Port used by fastapi_blotter.py
+    notionNOPar = requests.get(api_url)
+    print(f"All Trades: {notionNOPar.json()}")
+
+    # get request on query_by_notional with param
+    api_url = "http://localhost:50301/query_by_notional"  # Port used by fastapi_blotter.py
+    par = 250
+    notion_w_par = requests.get(api_url, params={"min_notional": par})
+    print(f"Trades with notional >= {par}: {notion_w_par.json()}")

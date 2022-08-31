@@ -125,7 +125,7 @@ def query_by_notional(min_notional: Optional[float] = None):
         # retrieve all records
         trades = TreeTrade.objects.order_by("trade_id")
     else:
-        # retrieving all trades where notion >= given data
+        # retrieving all trades where notion >= min_notion
         trades = TreeTrade.objects(trade_notion__gte=min_notional).order_by("trade_id")
     result = {"trades": [trade.to_json() for trade in trades]}
     return result
